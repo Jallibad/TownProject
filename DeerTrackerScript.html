@@ -12,12 +12,8 @@
 			var map, heatmap;
 			var deerSpots = [];
 			var addresses = ["51 Burnside Drive", "157 Rosedale Ave"];
-			var completed = 0;
 			function initialize()
 			{
-				for (var i=0; i<100; i++)
-					for (var n=0; n<2; n++)
-						addresses.push(addresses[n]);
 				var townCenter = new google.maps.LatLng(40.99331, -73.875854)
 				var mapOptions =
 				{
@@ -58,15 +54,10 @@
 						}
 						else
 							alert('Geocode was not successful for the following reason: ' + status);
-						testFinish();
-				});
+						if (i == addresses.length-1)
+							finished();
+					});
 				}
-			}
-			function testFinish()
-			{
-				completed++;
-				if (completed == addresses.length)
-					finished();
 			}
 			function finished()
 			{
