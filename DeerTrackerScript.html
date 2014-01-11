@@ -11,7 +11,8 @@
 		<script>
 			var map, heatmap;
 			var deerSpots = [];
-			var addresses = ["51 Burnside Drive", "157 Rosedale Ave"];
+			var addresses = ["51 Burnside Drive", "157 Rosedale Ave", "55 Jefferson Ave"];
+			var completed = 1;
 			function initialize()
 			{
 				var townCenter = new google.maps.LatLng(40.99331, -73.875854)
@@ -21,9 +22,9 @@
 					center: townCenter
 				};
 				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-				for (var i=0; i<addresses.length; i++)
+				for (index=0; index<addresses.length; index++)
 				{
-					var address = addresses[i]
+					var address = addresses[index]
 					if (address.indexOf('Burke Estate') != -1)
 						address = "14 Hopke Ave";
 					if (address.indexOf('Hastings-On-Hudson') == -1)
@@ -48,24 +49,26 @@
 									});
 									found = true;
 								}
-							}	
+							}
 							if (!found)
 								alert("no results found");
 						}
 						else
 							alert('Geocode was not successful for the following reason: ' + status);
-						if (i == addresses.length-1)
-							finished();
+						finished();
 					});
 				}
 			}
 			function finished()
 			{
-				heatmap = new google.maps.visualization.HeatmapLayer
-				({
-					data: new google.maps.MVCArray(deerSpots)
-				});
-				heatmap.setMap(map);
+				if (completed++ == addresses.length)
+				{
+					heatmap = new google.maps.visualization.HeatmapLayer
+					({
+						data: new google.maps.MVCArray(deerSpots)
+					});
+					heatmap.setMap(map);
+				}
 			}
 			google.maps.event.addDomListener(window, 'load', initialize);
 		</script>
