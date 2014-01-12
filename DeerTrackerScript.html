@@ -9,59 +9,53 @@
 		</style>
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCTWr_gTU0cH3ubl588V5bYmUBbZ4hncEM&sensor=false&libraries=visualization"></script>
 		<script>
-			var map, heatmap;
-			var deerSpots = [];
-			var addresses = ["51 Burnside Drive", "157 Rosedale Ave", "55 Jefferson Ave"];
-			var completed = 1;
+			var map; //The Google Maps object
+			var heatmap; //The heatmap that goes on the map
+			var deerSpots = []; //Array of latLong's that is made into an MVCArray and put on the map
+			var addresses = ["51 Burnside Drive", "157 Rosedale Ave", "55 Jefferson Ave"]; //Hard-coded list of addresses
+			var completed = 1; //Current address number being worked on (from 1 instead of 0)
 			function initialize()
 			{
-				var townCenter = new google.maps.LatLng(40.99331, -73.875854)
-				var mapOptions =
+				var townCenter = new google.maps.LatLng(40.99331, -73.875854); //Center of the map, currently the high school
+				var mapOptions = //Setting up the map
 				{
-					zoom: 15,
-					center: townCenter
+					zoom: 15, //How far zoomed in it is (larger is closer)
+					center: townCenter //Center the map on the town center
 				};
 				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 				for (index=0; index<addresses.length; index++)
 				{
+					//Getting and sanitizing the address
 					var address = addresses[index]
-					if (address.indexOf('Burke Estate') != -1)
+					if (address.indexOf('Burke Estate') != -1) //Change Burke Estate to nearest street
 						address = "14 Hopke Ave";
-					if (address.indexOf('Hastings-On-Hudson') == -1)
+					if (address.indexOf('Hastings-On-Hudson') == -1) //Add town name if nonexistent
 						address += ", Hastings-On-Hudson";
-					if (address.indexOf('10706') == -1)
+					if (address.indexOf('10706') == -1) //Add zip-code if nonexistent
 						address += ", 10706";
 					console.log(address);
 					new google.maps.Geocoder().geocode( { 'address': address}, function(results, status)
 					{
 						if (status == google.maps.GeocoderStatus.OK)
-						{
-							var found = false;
-							for (var i=0; i<results.length; i++)
+							for (var i=0; i<results.length; i++) //Going through each result (there are a lot of results normally)
 							{
-								var formatted = results[i].formatted_address.split(/,/)[2].split(/ /);
-								if (formatted.length == 3 && formatted[2] == 10706)
-								{
-									deerSpots.push
+								var formatted = results[i].formatted_address.split(/,/)[2].split(/ /); //Splits the result into parts
+								if (formatted.length == 3 && formatted[2] == 10706) //Check if it has the correct zip-code
+									deerSpots.push //Adding it to the array of latLong's
 									({
-										location: results[i].geometry.location,
-										weight: 1
+										location: results[i].geometry.location, //latLong of the result
+										weight: 1 //Weighting of the result, currently unused
 									});
-									found = true;
-								}
 							}
-							if (!found)
-								alert("no results found");
-						}
 						else
 							alert('Geocode was not successful for the following reason: ' + status);
 						finished();
 					});
 				}
 			}
-			function finished()
+			function finished() //Called each time an address is geocoded, but only makes the map once every address is finished
 			{
-				if (completed++ == addresses.length)
+				if (completed++ == addresses.length) //Checks if geocoding is done, and increments the count
 				{
 					heatmap = new google.maps.visualization.HeatmapLayer
 					({
