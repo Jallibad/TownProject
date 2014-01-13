@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Heatmaps</title>
+		<style type="text/CSS">
+			html {height: 100%}
+			body {height: 100%; margin: 0; padding: 0}
+			#map-canvas {height: 100%}
+		</style>
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCTWr_gTU0cH3ubl588V5bYmUBbZ4hncEM&sensor=false&libraries=visualization"></script>
+		<script>
+			function initialize()
+			{
+				var townCenter = new google.maps.LatLng(40.99331, -73.875854); //Center of the map, currently the high school
+				var map = new google.maps.Map
+				(
+					document.getElementById('map-canvas'),
+					{
+						center: townCenter,
+						zoom: 15
+					}
+				);
+				var layer = new google.maps.FusionTablesLayer
+				({
+					query:
+					{
+						select: 'full',
+						from: '1F-OtIjhMsxSWnU2KGBH4VB6IOb3FyEvXIGCvVk8'
+					},
+					heatmap:
+					{
+						enabled: true,
+						radius: 20
+					}
+				});
+				layer.setMap(map);
+				console.log(layer);
+			}
+			google.maps.event.addDomListener(window, 'load', initialize);
+		</script>
+	</head>
+	<body>
+		<div id="map-canvas"></div>
+	</body>
+</html>
