@@ -1,14 +1,65 @@
 <html>
-  <head>
-    <title>Google Fusion Tables API Example</title>
-  </head>
-  <body>
-    <div id="content"></div>
-    <script>
-    function handler(response) {
-      console.log(response);
-    }
-    </script>
-    <script src="https://www.googleapis.com/fusiontables/v1/tables/1F-OtIjhMsxSWnU2KGBH4VB6IOb3FyEvXIGCvVk8?callback=handler&key=AIzaSyBT333F6V6f7ABRdYxzNLV0dcetr_hx2I0"></script>
-  </body>
+	<head>
+		<meta charset="UTF-8">
+		<title>Fusion Tables Layer Example: Basic JSONP Request</title>
+		<style type="text/css">
+			#map-canvas
+			{
+				height: 500px;
+				width: 600px;
+			}
+			.store-name
+			{
+				font-weight: bold;
+				margin: 10px 0px 0px 0px;
+				padding: 0px;
+			}
+			.address, .delivers
+			{
+				margin: 0px;
+				padding: 0px;
+			}
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
+		</script>
+		<script type="text/JavaScript">
+			function initialize()
+			{
+				var query = "SELECT Full FROM 1F-OtIjhMsxSWnU2KGBH4VB6IOb3FyEvXIGCvVk8";
+				var encodedQuery = encodeURIComponent(query);
+				
+				// Construct the URL
+				var url = ['https://www.googleapis.com/fusiontables/v1/query'];
+				url.push('?sql=' + encodedQuery);
+				url.push('&key=AIzaSyCTWr_gTU0cH3ubl588V5bYmUBbZ4hncEM');
+				url.push('&callback=?');
+				
+				// Send the JSONP request using jQuery
+				$.ajax
+				({
+					url: url.join(''),
+					dataType: 'jsonp',
+					success: function (data)
+					{
+						var rows = data['rows'];
+						var ftData = document.getElementById('ft-data');
+						console.log(rows);
+						for (var i in rows)
+						{
+							var locations = rows[i][0];
+							var dataElement = document.createElement('div');
+							var locationsElement = document.createElement('p');
+							locationsElement.innerHTML = locations;
+							locationsElement.className = 'locations';
+							dataElement.appendChild(locationsElement);
+							ftData.appendChild(dataElement);
+						}
+					}
+				});
+			}
+		</script>
+	</head>
+	<body onload="initialize()">
+		<div id="ft-data"></div>
+	</body>
 </html>
